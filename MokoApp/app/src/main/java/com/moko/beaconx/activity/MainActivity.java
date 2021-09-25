@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -19,6 +20,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.moko.beaconx.AppConstants;
 import com.moko.beaconx.R;
 import com.moko.beaconx.adapter.BeaconXListAdapter;
@@ -46,6 +49,9 @@ import com.moko.support.utils.MokoUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -331,8 +337,30 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                 return 0;
             }
         });
-        postRequest("123", url);
 
+        JSONArray beacon = new JSONArray();
+        for(int i=0; i<beaconXInfos.size(); i++){
+            JSONObject beacon1 = new JSONObject();
+            try {
+                beacon1.put("mac", beaconXInfos.get(i).mac);
+                beacon1.put("name", beaconXInfos.get(i).name);
+                beacon1.put("rssi", String.valueOf(beaconXInfos.get(i).rssi));
+
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            beacon.put(beacon1);
+        }
+        JSONObject beacons = new JSONObject();
+
+        try {
+            beacons.put("beacons", (Object)beacon);
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        postRequest(beacons.toString(), url);
     }
 
 
@@ -550,7 +578,6 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
 
 
     private void postRequest(String message, String URL) {
-
         RequestBody requestBody = buildRequestBody(message);
         System.out.println(message);
         System.out.println(URL);
