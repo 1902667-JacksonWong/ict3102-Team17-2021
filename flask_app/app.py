@@ -27,6 +27,7 @@ def index():
             beacon_list = beacons['beacons']
             print(temp)
             return f"<h1>{temp}</h1>"
+            
         return data
         
     
