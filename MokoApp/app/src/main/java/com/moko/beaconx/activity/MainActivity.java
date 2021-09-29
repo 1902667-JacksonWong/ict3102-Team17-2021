@@ -82,7 +82,7 @@ import okhttp3.Response;
 
 
 public class MainActivity extends BaseActivity implements MokoScanDeviceCallback, BaseQuickAdapter.OnItemChildClickListener {
-    private String url = "http://" + "your ip address" + ":" + 5000 + "/";
+    private String url = "http://" + "192.168.18.10" + ":" + 5000 + "/";
     private String postBodyString;
     private MediaType mediaType;
     private RequestBody requestBody;

@@ -27,6 +27,7 @@ def index():
             beacon_list = beacons['beacons']
             print(temp)
             return f"<h1>{temp}</h1>"
+        return data
         
     
 def handle_request():
@@ -36,4 +37,4 @@ def handle_request():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host="your ip address")
+    app.run(debug=True, host="0.0.0.0")
