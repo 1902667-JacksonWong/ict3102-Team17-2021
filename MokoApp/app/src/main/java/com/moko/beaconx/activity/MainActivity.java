@@ -1,5 +1,6 @@
 package com.moko.beaconx.activity;
 
+import android.annotation.SuppressLint;
 import android.app.AppComponentFactory;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
@@ -82,10 +83,13 @@ import okhttp3.Response;
 
 
 public class MainActivity extends BaseActivity implements MokoScanDeviceCallback, BaseQuickAdapter.OnItemChildClickListener {
-    private String url = "http://" + "192.168.18.10" + ":" + 5000 + "/";
+    private String url = "http://" + "192.168.18.15" + ":" + 5000 + "/";
     private String postBodyString;
     private MediaType mediaType;
     private RequestBody requestBody;
+    long [] durations = new long[20];
+    int limit = 20;
+    int counter = 0;
 
 
     @BindView(R.id.iv_refresh)
@@ -276,6 +280,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                 updateDevices();
             }
         }).start();
+
     }
 
     private BeaconXInfoParseableImpl beaconXInfoParseable;
@@ -295,7 +300,14 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         animation = null;
     }
 
+    @SuppressLint("LongLogTag")
     private void updateDevices() {
+
+        Log.i("PR2", "--------" );
+        Log.i("PR2", "starttime" );
+        long startime= System.currentTimeMillis();
+        Log.i("TimeClass", " Time value in milliseconds "+ startime);
+
         beaconXInfos.clear();
         if (!TextUtils.isEmpty(filterName) || filterRssi != -127) {
             ArrayList<BeaconXInfo> beaconXInfosFilter = new ArrayList<>(beaconXInfoHashMap.values());
@@ -360,7 +372,33 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        postRequest(beacons.toString(), url);
+        Log.i("PR2", "endtime" );
+        long endtime= System.currentTimeMillis();
+        Log.i("TimeClass", " Time value in milliseconds "+ endtime);
+
+        long duration = endtime - startime;
+        Log.i("TimeClassResults", " Time value in milliseconds "+ duration);
+
+        durations[counter] = duration;
+        counter += 1;
+        int total = 0;
+        if(counter == limit){
+            counter = 0;
+            for(int i=0; i<limit; i++){
+                total += duration;
+            }
+            int Result = total/limit;
+            Log.i("TimeClassAverage", "Average processing time per 20 request is " + String.valueOf(Result) + " milliseconds");
+        }
+
+
+        try {
+            postRequest(beacons.toString(), url);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+//            e.printStackTrace();
+            Log.i("Serverfail","fail");
+        }
     }
 
 
