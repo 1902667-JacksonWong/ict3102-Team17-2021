@@ -1,7 +1,6 @@
 package com.moko.beaconx.activity;
 
 import android.annotation.SuppressLint;
-import android.app.AppComponentFactory;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -15,14 +14,14 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.moko.beaconx.AppConstants;
 import com.moko.beaconx.R;
 import com.moko.beaconx.adapter.BeaconXListAdapter;
@@ -104,9 +103,13 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
     RelativeLayout rl_filter;
     @BindView(R.id.tv_filter)
     TextView tv_filter;
+
     private HashMap<String, BeaconXInfo> beaconXInfoHashMap;
     private ArrayList<BeaconXInfo> beaconXInfos;
     private BeaconXListAdapter adapter;
+
+    private String _staff = "000";
+    private String _ipaddress = "0.0.0.0:0000";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,7 +135,23 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         if (animation == null) {
             startScan();
         }
+        Button ipbutton = findViewById(R.id.updatebutton);
+        EditText staffidtext = findViewById(R.id.staffid_text);
+        EditText iptext = findViewById(R.id.ipaddress_text);
 
+
+        ipbutton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                _ipaddress = iptext.getText().toString();
+                _staff = staffidtext.getText().toString();
+
+                url = "http://" + _ipaddress + "/";
+
+                // Do something in response to button click
+                Log.i("ipbu", "this is working");
+                Log.i("ipbu",_ipaddress);
+            }
+        });
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -355,7 +374,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
             JSONObject beacon1 = new JSONObject();
             try {
                 beacon1.put("mac", beaconXInfos.get(i).mac);
-                beacon1.put("name", beaconXInfos.get(i).name);
+                beacon1.put("staff", _staff);
                 beacon1.put("rssi", String.valueOf(beaconXInfos.get(i).rssi));
 
             } catch (JSONException e) {
@@ -391,13 +410,16 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
             Log.i("TimeClassAverage", "Average processing time per 20 request is " + String.valueOf(Result) + " milliseconds");
         }
 
-
-        try {
-            postRequest(beacons.toString(), url);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
+        if (_staff != "000" && _ipaddress != "0.0.0.0:0000") {
+            Log.i("sent0", _ipaddress);
+            try {
+                postRequest(beacons.toString(), url);
+                Log.i("sent","sent");
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
 //            e.printStackTrace();
-            Log.i("Serverfail","fail");
+                Log.i("Serverfail", "fail");
+            }
         }
     }
 

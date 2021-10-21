@@ -40,11 +40,11 @@
 
     <RelativeLayout
         android:id="@+id/rl_edit_filter"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
         android:background="@drawable/shape_radius_white_bg"
         android:paddingLeft="10dp"
         android:paddingRight="10dp">
@@ -101,12 +101,34 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_devices"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="497dp"
         android:layout_marginTop="10dp"
         android:layout_weight="1.0"
         android:overScrollMode="never"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         tools:listitem="@layout/list_item_device" />
+
+    <EditText
+        android:id="@+id/staffid_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="000" />
+
+    <EditText
+        android:id="@+id/ipaddress_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="0.0.0.0:0000" />
+
+    <Button
+        android:id="@+id/updatebutton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Update" />
 
 </LinearLayout>
