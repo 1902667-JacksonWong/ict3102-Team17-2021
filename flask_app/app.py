@@ -67,13 +67,20 @@ def index():
         beacons = json.loads((data).decode("UTF-8"))
         if isinstance(beacons, dict):
             beacon_list = beacons['beacons']
-            print(beacon_list[0]['name'])
+            sda = beacon_list[0]['staff']
             # creating a cursor for the db
             conn = opensqlconnection()
             mycursor = conn.cursor()
+
+            # delete current first
+            sql = f"DELETE FROM Detected_Beacon WHERE sda = '{sda}'"
+            mycursor.execute(sql)
+            conn.commit()
+
+            # then add new ones
             for beacon in beacon_list:
                 sql = "INSERT INTO Detected_Beacon (sda, beacon_mac, beacon_rssi) VALUES (%s, %s, %s)"
-                val = ('01', beacon['mac'], beacon['rssi'])
+                val = (beacon['staff'], beacon['mac'], beacon['rssi'])
                 mycursor.execute(sql, val)
 
             conn.commit()
