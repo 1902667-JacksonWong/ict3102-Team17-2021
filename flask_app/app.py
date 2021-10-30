@@ -5,6 +5,7 @@ import json
 
 # for sql db
 import pymysql as sql
+import datetime
 
 app = Flask(__name__)
 
@@ -44,7 +45,10 @@ def index():
         # creating a cursor for the db
         conn = opensqlconnection()
         mycursor = conn.cursor()
-        mycursor.execute("SELECT * FROM Detected_Beacon")
+        # SELECT id,sda,MAX(beacon_rssi) as maxr FROM 3102_Flask.Detected_Beacon GROUP BY sda
+        # SELECT d.id id, d.sda sda, d.beacon_rssi rssi, d.beacon_mac mac FROM 3102_Flask.temp t, 3102_Flask.Detected_Beacon d WHERE t.maxr = d.beacon_rssi;
+        # SELECT d.sda sda, d.rssi rssi, b.mac mac, b.location location FROM 3102_Flask.sdb d, 3102_Flask.Beacon b WHERE d.mac = b.mac;
+        mycursor.execute("SELECT * FROM 3102_Flask.loc")
 
         myresult = mycursor.fetchall()
 
@@ -52,6 +56,10 @@ def index():
         conn.close()
         # print(str(myresult))
         # return str(myresult)
+
+        x = datetime.datetime.now()
+        print(x)
+
         context = {
             'results': myresult
         }
@@ -79,15 +87,16 @@ def index():
 
             # then add new ones
             for beacon in beacon_list:
+                mac = beacon['mac'].replace(':','')
                 sql = "INSERT INTO Detected_Beacon (sda, beacon_mac, beacon_rssi) VALUES (%s, %s, %s)"
-                val = (beacon['staff'], beacon['mac'], beacon['rssi'])
+                val = (beacon['staff'], mac, beacon['rssi'])
                 mycursor.execute(sql, val)
 
             conn.commit()
             mycursor.close()
             conn.close
 
-        return f"<h1>Hello world</h1>"
+        return f"<h1>Request Recieved/h1>"
 
 
 def handle_request():
@@ -96,3 +105,4 @@ def handle_request():
 
 if __name__ == '__main__':
     app.run(debug=True, host=file[3], port=file[4])
+    #app.run(debug=True, host='0.0.0.0', port=8080)

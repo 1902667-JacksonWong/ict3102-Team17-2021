@@ -1,12 +1,16 @@
 <html>
+  <title>SDA Locations</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   <body>
-    <h1>hello</h1>
-    <ol>
+    <div class="w3-container">
+    <h1>Locations of Safe Distancing Ambassadors</h1>
       {%for result in data.results%}
-
-      <li>{{result}}</li>
+        <div class="w3-panel w3-blue w3-round-xlarge" style="width: 500px;">
+          <p>SDA {{result.0}} is at {{result.3}} as of {{result.4}}</p>
+        </div>
       {%endfor%}
-    </ol>
+      </div>
   </body>
 </html>
 <script>
