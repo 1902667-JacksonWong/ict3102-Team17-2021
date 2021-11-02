@@ -45,23 +45,63 @@ def index():
         # creating a cursor for the db
         conn = opensqlconnection()
         mycursor = conn.cursor()
+
+        # Sql version for the lols, but a bit bugggy
         # SELECT id,sda,MAX(beacon_rssi) as maxr FROM 3102_Flask.Detected_Beacon GROUP BY sda
         # SELECT d.id id, d.sda sda, d.beacon_rssi rssi, d.beacon_mac mac FROM 3102_Flask.temp t, 3102_Flask.Detected_Beacon d WHERE t.maxr = d.beacon_rssi;
         # SELECT d.sda sda, d.rssi rssi, b.mac mac, b.location location FROM 3102_Flask.sdb d, 3102_Flask.Beacon b WHERE d.mac = b.mac;
-        mycursor.execute("SELECT * FROM 3102_Flask.loc")
+        # mycursor.execute("SELECT * FROM 3102_Flask.loc")
+        
+        query = """SELECT d.id id, d.sda sda, b.mac mac, d.beacon_rssi rssi, d.datetime datetime, b.location location 
+                    FROM 3102_Flask.Detected_Beacon d, 3102_Flask.Beacon b 
+                    WHERE d.beacon_mac = b.mac"""
+        mycursor.execute(query)
+
 
         myresult = mycursor.fetchall()
+        # print(myresult)
+        
+        # initialise the dictionary of beacons
+        dbeacons = {}
 
+        # loopint through the array of results
+        for row in myresult:
+            # row [1] : SDA
+            # row [2] : MAC
+            # row [3] : RSSI
+            # row [4] : DATETIME
+            # print(row)
+            
+            # add key into dictionary if not already there
+            if str(row[1]) not in dbeacons:
+                temp = []
+                dbeacons[row[1]] = temp
+
+            # add the result into the crreesdponding key
+            dbeacons[row[1]].append(row)
+
+        # initialise array for output
+        output = []
+        # loop though all sdas
+        for sda in dbeacons:
+            # loopo though each row fo result to find higest
+            highest_rssi = 0
+            highest = 0
+            for i in range(len(dbeacons[sda])):
+                if int(dbeacons[sda][i][3]) > highest_rssi:
+                    highest_rssi = int(dbeacons[sda][i][3])
+                    highest = i
+            # add the row with the highest rssi to the output
+            output.append(dbeacons[sda][highest])
+
+        # close the connection
         mycursor.close()
         conn.close()
-        # print(str(myresult))
-        # return str(myresult)
 
         x = datetime.datetime.now()
-        print(x)
 
         context = {
-            'results': myresult
+            'results': output
         }
         # print(context)
         return render_template('index.html', data=context)
@@ -96,11 +136,7 @@ def index():
             mycursor.close()
             conn.close
 
-        return f"<h1>Request Recieved/h1>"
-
-
-def handle_request():
-    return "Successful Connection"
+        return f"Request Recieved"
 
 
 if __name__ == '__main__':
