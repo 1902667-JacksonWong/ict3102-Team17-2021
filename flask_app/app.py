@@ -2,6 +2,7 @@ from logging import Handler
 from flask import Flask, request, render_template
 from flask.json import jsonify
 import json
+import time
 
 # for sql db
 import pymysql as sql
@@ -20,7 +21,7 @@ for line in f:
     file.append(line)
 f.close()
 
-# funcion to open the connectiona nd return the db conn
+# funcion to open the connection and return the db conn
 
 
 def opensqlconnection():
@@ -31,7 +32,6 @@ def opensqlconnection():
         password=file[2],
         database="3102_Flask"
     )
-
     return mydb
 
 
@@ -138,6 +138,48 @@ def index():
 
         return f"Request Recieved"
 
+@app.route('/extractbeacon', methods=['GET'])
+def extractbeacon():
+    #Sample data: staff_id=0&start_time="+str(start_timestamp)+"&end_time="+str(end_timestamp)
+
+    staff_id = request.args.get('staff_id')
+    start_time = int(request.args.get('start_time'))
+    start_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(start_time))
+    end_time = int(request.args.get('end_time'))
+    end_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(end_time))
+
+    #connect to db
+    conn = opensqlconnection()
+    mycursor = conn.cursor()
+
+    #query
+    #not too sure what are the required date for HACS server
+    query = "SELECT sda, beacon_mac, beacon_rssi, datetime " \
+            "FROM Detected_Beacon " \
+            " WHERE datetime >= %s AND datetime <= %s"
+    mycursor.execute(query, (start_time, end_time))
+    # myresult = mycursor.fetchall()
+    myresult = format(mycursor.fetchall())
+
+    # close the connection
+    mycursor.close()
+    conn.close()
+
+    # asd = jsonify(myresult)
+    # Return all records
+    return jsonify(myresult)
+
+def format(arr):
+    newarr = []
+    for x in arr:
+        obj = {}
+        l = list(x)
+        obj['sda'] = l[0]
+        obj['beacon_mac'] = l[1]
+        obj['beacon_rssi'] = l[2]
+        obj['datetime'] = l[3]
+        newarr.append(obj)
+    return newarr
 
 if __name__ == '__main__':
     app.run(debug=True, host=file[3], port=file[4])
