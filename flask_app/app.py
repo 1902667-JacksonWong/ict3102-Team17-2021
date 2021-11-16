@@ -142,7 +142,7 @@ def index():
 def extractbeacon():
     #Sample data: staff_id=0&start_time="+str(start_timestamp)+"&end_time="+str(end_timestamp)
 
-    staff_id = request.args.get('staff_id')
+    sda = request.args.get('staff_id')
     start_time = int(request.args.get('start_time'))
     start_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(start_time))
     end_time = int(request.args.get('end_time'))
@@ -153,19 +153,18 @@ def extractbeacon():
     mycursor = conn.cursor()
 
     #query
-    #not too sure what are the required date for HACS server
     query = "SELECT sda, beacon_mac, beacon_rssi, datetime " \
             "FROM Detected_Beacon " \
-            " WHERE datetime >= %s AND datetime <= %s"
-    mycursor.execute(query, (start_time, end_time))
-    # myresult = mycursor.fetchall()
+            "WHERE sda = %s " \
+            "AND datetime >= %s AND datetime <= %s"
+
+    mycursor.execute(query, (sda, start_time, end_time))
     myresult = format(mycursor.fetchall())
 
     # close the connection
     mycursor.close()
     conn.close()
 
-    # asd = jsonify(myresult)
     # Return all records
     return jsonify(myresult)
 
