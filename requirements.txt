@@ -1,0 +1,7 @@
+    Flask==1.1.2
+    Flask-Cors==3.0.9
+    textract==1.6.3
+    requests
+    APScheduler
+    mysql-connector-python
+    pymysql
