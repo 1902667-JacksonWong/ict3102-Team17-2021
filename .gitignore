@@ -4,3 +4,13 @@ flask_app/credentials.txt
 .idea/vcs.xml
 .idea/modules.xml
 .idea/ict3102-Team17-2021.iml
+flask_app/.idea/vcs.xml
+flask_app/.idea/modules.xml
+flask_app/.idea/misc.xml
+flask_app/.idea/inspectionProfiles/profiles_settings.xml
+flask_app/.idea/flask_app.iml
+HACS/.idea/vcs.xml
+HACS/.idea/modules.xml
+HACS/.idea/misc.xml
+HACS/.idea/inspectionProfiles/profiles_settings.xml
+HACS/.idea/HACS.iml
