@@ -181,5 +181,6 @@ def format(arr):
     return newarr
 
 if __name__ == '__main__':
+    print(file[4])
     app.run(debug=True, host=file[3], port=file[4])
     #app.run(debug=True, host='0.0.0.0', port=8080)
