@@ -9,7 +9,7 @@ app = Flask(__name__)
 # ip_address = "192.168.50.90"
 # AWS
 ip_address = "13.229.114.206"
-port = "8080"
+port = "5000"
 
 @app.route('/')
 def index():

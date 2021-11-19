@@ -3,10 +3,11 @@ from flask import Flask, request, render_template
 from flask.json import jsonify
 import json
 import time
+from datetime import datetime
 
 # for sql db
 import pymysql as sql
-import datetime
+# import datetime
 
 app = Flask(__name__)
 
@@ -98,7 +99,7 @@ def index():
         mycursor.close()
         conn.close()
 
-        x = datetime.datetime.now()
+        # x = datetime.datetime.now()
 
         context = {
             'results': output
@@ -128,8 +129,11 @@ def index():
             # then add new ones
             for beacon in beacon_list:
                 mac = beacon['mac'].replace(':','')
-                sql = "INSERT INTO Detected_Beacon (sda, beacon_mac, beacon_rssi) VALUES (%s, %s, %s)"
-                val = (beacon['staff'], mac, beacon['rssi'])
+                now = datetime.now()
+                datetime1 = now.strftime("%Y-%m-%d %H:%M:%S")
+                print ("datetime: ", datetime1)
+                sql = "INSERT INTO Detected_Beacon (sda, beacon_mac, beacon_rssi, datetime) VALUES (%s, %s, %s, %s)"
+                val = (beacon['staff'], mac, beacon['rssi'], str(datetime1))
                 mycursor.execute(sql, val)
 
             conn.commit()
@@ -141,13 +145,14 @@ def index():
 @app.route('/extractbeacon', methods=['GET'])
 def extractbeacon():
     #Sample data: staff_id=0&start_time="+str(start_timestamp)+"&end_time="+str(end_timestamp)
-
+    
     sda = request.args.get('staff_id')
     start_time = int(request.args.get('start_time'))
     start_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(start_time))
     end_time = int(request.args.get('end_time'))
     end_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(end_time))
-
+    print(end_time)
+    print(start_time)
     #connect to db
     conn = opensqlconnection()
     mycursor = conn.cursor()
@@ -164,7 +169,7 @@ def extractbeacon():
     # close the connection
     mycursor.close()
     conn.close()
-
+    print(myresult)
     # Return all records
     return jsonify(myresult)
 
