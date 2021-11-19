@@ -6,9 +6,9 @@ from apscheduler.schedulers.background import BackgroundScheduler
 app = Flask(__name__)
 
 # Local
-# ip_address = "192.168.50.90"
+ip_address = "192.168.50.90"
 # AWS
-ip_address = "13.229.114.206"
+# ip_address = "0.0.0.0."
 port = "5000"
 
 @app.route('/')
@@ -52,4 +52,4 @@ sched_2 = BackgroundScheduler(daemon=True)
 sched_2.add_job(ping_server_2,'interval',seconds=10)
 sched_2.start()
 
-app.run(debug=True, host='0.0.0.0')
+app.run(debug=True, host='0.0.0.0', port='8000')
