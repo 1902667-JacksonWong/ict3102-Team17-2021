@@ -8,7 +8,7 @@ app = Flask(__name__)
 # Local
 # ip_address = "192.168.50.90"
 # AWS
-ip_address = "172.31.19.55"
+ip_address = "13.229.114.206"
 port = "8080"
 
 @app.route('/')
