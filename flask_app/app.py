@@ -35,7 +35,6 @@ def opensqlconnection():
     )
     return mydb
 
-
 # route for the home page
 
 
@@ -72,20 +71,20 @@ def index():
             # row [3] : RSSI
             # row [4] : DATETIME
             # print(row)
-            
+
             # add key into dictionary if not already there
             if str(row[1]) not in dbeacons:
                 temp = []
                 dbeacons[row[1]] = temp
 
-            # add the result into the crreesdponding key
+            # add the result into the corresponding key
             dbeacons[row[1]].append(row)
 
         # initialise array for output
         output = []
         # loop though all sdas
         for sda in dbeacons:
-            # loopo though each row fo result to find higest
+            # loops though each row fo result to find higest
             highest_rssi = 0
             highest = 0
             for i in range(len(dbeacons[sda])):
@@ -158,10 +157,11 @@ def extractbeacon():
     mycursor = conn.cursor()
 
     #query
-    query = "SELECT sda, beacon_mac, beacon_rssi, datetime " \
+    query = "SELECT beacon_mac, beacon_rssi " \
             "FROM Detected_Beacon " \
             "WHERE sda = %s " \
-            "AND datetime >= %s AND datetime <= %s"
+            "AND datetime >= %s AND datetime <= %s" \
+            "ORDER BY beacon_rssi DESC LIMIT 1"
 
     mycursor.execute(query, (sda, start_time, end_time))
     myresult = format(mycursor.fetchall())
@@ -178,10 +178,8 @@ def format(arr):
     for x in arr:
         obj = {}
         l = list(x)
-        obj['sda'] = l[0]
-        obj['beacon_mac'] = l[1]
-        obj['beacon_rssi'] = l[2]
-        obj['datetime'] = l[3]
+        obj['beacon_mac'] = l[0]
+        obj['beacon_rssi'] = l[1]
         newarr.append(obj)
     return newarr
 
