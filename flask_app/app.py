@@ -125,20 +125,34 @@ def index():
             mycursor.execute(sql)
             conn.commit()
 
+            processingtimetotal = 0
+            count = 0
             # then add new ones
             for beacon in beacon_list:
                 mac = beacon['mac'].replace(':','')
                 now = datetime.now()
                 datetime1 = now.strftime("%Y-%m-%d %H:%M:%S")
                 print ("datetime: ", datetime1)
+                startimeForinsert = time.time() * 1000
                 sql = "INSERT INTO Detected_Beacon (sda, beacon_mac, beacon_rssi, datetime) VALUES (%s, %s, %s, %s)"
                 val = (beacon['staff'], mac, beacon['rssi'], str(datetime1))
                 mycursor.execute(sql, val)
+                endtimeForinsert = time.time() * 1000
+                
+                print("startimeForinsertDB: "+ str(startimeForinsert))
+                print("endtimeForinsertDB: "+ str(endtimeForinsert))
+                processingtime = endtimeForinsert - startimeForinsert
+                count += 1
+                print("Total-ProcessingTime-DB: "+ str(processingtime))
+                processingtimetotal = processingtimetotal + processingtime
+            print("count: " + str(count))
+            print("Total-Average-ProcessingTime-DB: "+ str(processingtimetotal) + " milliseconds for total number of " + str(count) + " requests")
+            
 
             conn.commit()
             mycursor.close()
             conn.close
-
+        
         return f"Request Recieved"
 
 @app.route('/extractbeacon', methods=['GET'])
