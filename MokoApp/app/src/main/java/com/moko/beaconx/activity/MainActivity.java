@@ -292,7 +292,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                     tvDeviceNum.setText(String.format("DEVICE(%d)", beaconXInfos.size()));
                 });
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(3000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -552,6 +552,13 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
             @Override
             public void run() {
                 MokoSupport.getInstance().stopScanDevice();
+                try{
+                    Thread.sleep(1000);
+
+                } catch (InterruptedException e ){
+                    e.printStackTrace();
+                }
+                startScan();
             }
         }, 1000 * 60);
     }
@@ -667,7 +674,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                     public void run() {
                         try {
                             Toast.makeText(MainActivity.this, response.body().string(), Toast.LENGTH_LONG).show();
-                        } catch (IOException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
