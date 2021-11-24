@@ -35,6 +35,45 @@ def opensqlconnection():
     )
     return mydb
 
+
+# function to get the closest beacon
+
+def sortbeacons(input):
+    # initialise the dictionary of beacons
+    dbeacons = {}
+
+    # loopint through the array of results
+    for row in input:
+        # row [1] : SDA
+        # row [2] : MAC
+        # row [3] : RSSI
+        # row [4] : DATETIME
+        # print(row)
+
+        # add key into dictionary if not already there
+        if str(row[1]) not in dbeacons:
+            temp = []
+            dbeacons[row[1]] = temp
+
+        # add the result into the corresponding key
+        dbeacons[row[1]].append(row)
+
+    # initialise array for output
+    output = []
+    # loop though all sdas
+    for sda in dbeacons:
+        # loops though each row fo result to find higest
+        highest_rssi = -150
+        highest = 0
+        for i in range(len(dbeacons[sda])):
+            if int(dbeacons[sda][i][3]) > highest_rssi:
+                highest_rssi = int(dbeacons[sda][i][3])
+                highest = i
+        # add the row with the highest rssi to the output
+        output.append(dbeacons[sda][highest])
+
+    return output
+
 # route for the home page
 
 
@@ -51,48 +90,14 @@ def index():
         # SELECT d.id id, d.sda sda, d.beacon_rssi rssi, d.beacon_mac mac FROM 3102_Flask.temp t, 3102_Flask.Detected_Beacon d WHERE t.maxr = d.beacon_rssi;
         # SELECT d.sda sda, d.rssi rssi, b.mac mac, b.location location FROM 3102_Flask.sdb d, 3102_Flask.Beacon b WHERE d.mac = b.mac;
         # mycursor.execute("SELECT * FROM 3102_Flask.loc")
-        
+
         query = """SELECT d.id id, d.sda sda, b.mac mac, d.beacon_rssi rssi, d.datetime datetime, b.location location 
                     FROM 3102_Flask.Detected_Beacon d, 3102_Flask.Beacon b 
                     WHERE d.beacon_mac = b.mac"""
         mycursor.execute(query)
 
-
         myresult = mycursor.fetchall()
         # print(myresult)
-        
-        # initialise the dictionary of beacons
-        dbeacons = {}
-
-        # loopint through the array of results
-        for row in myresult:
-            # row [1] : SDA
-            # row [2] : MAC
-            # row [3] : RSSI
-            # row [4] : DATETIME
-            # print(row)
-
-            # add key into dictionary if not already there
-            if str(row[1]) not in dbeacons:
-                temp = []
-                dbeacons[row[1]] = temp
-
-            # add the result into the corresponding key
-            dbeacons[row[1]].append(row)
-
-        # initialise array for output
-        output = []
-        # loop though all sdas
-        for sda in dbeacons:
-            # loops though each row fo result to find higest
-            highest_rssi = 0
-            highest = 0
-            for i in range(len(dbeacons[sda])):
-                if int(dbeacons[sda][i][3]) > highest_rssi:
-                    highest_rssi = int(dbeacons[sda][i][3])
-                    highest = i
-            # add the row with the highest rssi to the output
-            output.append(dbeacons[sda][highest])
 
         # close the connection
         mycursor.close()
@@ -100,16 +105,27 @@ def index():
 
         # x = datetime.datetime.now()
 
+        # end_timestamp = int(time.time())
+        # start_timestamp = end_timestamp - 10
+
+        # print("start time", start_timestamp, " ", time.strftime(
+        #     '%Y-%m-%d %H:%M:%S', time.localtime(start_timestamp)))
+        # print("end time", end_timestamp, " ", time.strftime(
+        #     '%Y-%m-%d %H:%M:%S', time.localtime(end_timestamp)))
+
         context = {
-            'results': output
+            'results': sortbeacons(myresult)
         }
         # print(context)
         return render_template('index.html', data=context)
 
     if request.method == "POST":
-        # print("helloPost")
+        # Start time for the function
+        startimeForFunction = time.time() * 1000
+
+        # get the data from the post requsets
         data = request.data
-        # print(data)
+
         # Extracting JSON
         print("--------")
         beacons = json.loads((data).decode("UTF-8"))
@@ -123,69 +139,80 @@ def index():
             # delete current first
             sql = f"DELETE FROM Detected_Beacon WHERE sda = '{sda}'"
             mycursor.execute(sql)
-            conn.commit()
+            # conn.commit()
 
             processingtimetotal = 0
             count = 0
             # then add new ones
             for beacon in beacon_list:
-                mac = beacon['mac'].replace(':','')
+                mac = beacon['mac'].replace(':', '')
                 now = datetime.now()
                 datetime1 = now.strftime("%Y-%m-%d %H:%M:%S")
-                print ("datetime: ", datetime1)
+                # print("datetime: ", datetime1)
                 startimeForinsert = time.time() * 1000
                 sql = "INSERT INTO Detected_Beacon (sda, beacon_mac, beacon_rssi, datetime) VALUES (%s, %s, %s, %s)"
                 val = (beacon['staff'], mac, beacon['rssi'], str(datetime1))
                 mycursor.execute(sql, val)
                 endtimeForinsert = time.time() * 1000
-                
-                print("startimeForinsertDB: "+ str(startimeForinsert))
-                print("endtimeForinsertDB: "+ str(endtimeForinsert))
+
+                print("startimeForinsertDB: " + str(startimeForinsert))
+                print("endtimeForinsertDB: " + str(endtimeForinsert))
                 processingtime = endtimeForinsert - startimeForinsert
                 count += 1
-                print("Total-ProcessingTime-DB: "+ str(processingtime))
+                print("Total-ProcessingTime-DB: " + str(processingtime))
                 processingtimetotal = processingtimetotal + processingtime
             print("count: " + str(count))
-            print("Total-Average-ProcessingTime-DB: "+ str(processingtimetotal) + " milliseconds for total number of " + str(count) + " requests")
-            
+            print("Total-Average-ProcessingTime-DB: " + str(processingtimetotal) +
+                  " milliseconds for total number of " + str(count) + " requests")
 
             conn.commit()
             mycursor.close()
             conn.close
-        
+        endtimeForFunction = time.time() * 1000
+        processingtimeForFcuntioonn = endtimeForFunction - startimeForFunction
+        print("endtimeForFunction: " + str(processingtimeForFcuntioonn))
         return f"Request Recieved"
+
 
 @app.route('/extractbeacon', methods=['GET'])
 def extractbeacon():
-    #Sample data: staff_id=0&start_time="+str(start_timestamp)+"&end_time="+str(end_timestamp)
-    
+    # Sample data: staff_id=0&start_time="+str(start_timestamp)+"&end_time="+str(end_timestamp)
+
     sda = request.args.get('staff_id')
     start_time = int(request.args.get('start_time'))
     start_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(start_time))
     end_time = int(request.args.get('end_time'))
     end_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(end_time))
-    print(end_time)
-    print(start_time)
-    #connect to db
+    # print(end_time)
+    # print(start_time)
+    # connect to db
     conn = opensqlconnection()
     mycursor = conn.cursor()
 
-    #query
+    # query
     query = "SELECT beacon_mac, beacon_rssi " \
             "FROM Detected_Beacon " \
             "WHERE sda = %s " \
-            "AND datetime >= %s AND datetime <= %s" \
-            "ORDER BY beacon_rssi DESC LIMIT 1"
+            "AND datetime >= %s AND datetime <= %s"
 
     mycursor.execute(query, (sda, start_time, end_time))
     myresult = format(mycursor.fetchall())
 
+    # getting the highest
+    highestrssi = -150
+    hightestrow = 0
+    for i in range(len(myresult)):
+        if int(myresult[i]["beacon_rssi"]) > highestrssi:
+            highestrssi = int(myresult[i]["beacon_rssi"])
+            hightestrow = i
+
     # close the connection
     mycursor.close()
     conn.close()
-    print(myresult)
+    # print(myresult)
     # Return all records
-    return jsonify(myresult)
+    return jsonify(myresult[hightestrow])
+
 
 def format(arr):
     newarr = []
@@ -197,8 +224,8 @@ def format(arr):
         newarr.append(obj)
     return newarr
 
+
 if __name__ == '__main__':
-    print(file[4])
-    app.run(debug=True, host=file[3], port=file[4])
-    #app.run(debug=True, host=file[3], port=file[4], threaded=False)
-    #app.run(debug=True, host='0.0.0.0', port=8080)
+    # print(file[4])
+    #app.run(debug=True, host=file[3], port=file[4])
+    app.run(debug=True, host='0.0.0.0', port=5000)
