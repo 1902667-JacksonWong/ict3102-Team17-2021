@@ -176,8 +176,6 @@ def index():
 
 @app.route('/extractbeacon', methods=['GET'])
 def extractbeacon():
-    # Sample data: staff_id=0&start_time="+str(start_timestamp)+"&end_time="+str(end_timestamp)
-
     sda = request.args.get('staff_id')
     start_time = int(request.args.get('start_time'))
     start_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(start_time))
@@ -193,26 +191,17 @@ def extractbeacon():
     query = "SELECT beacon_mac, beacon_rssi " \
             "FROM Detected_Beacon " \
             "WHERE sda = %s " \
-            "AND datetime >= %s AND datetime <= %s"
+            "AND datetime >= %s AND datetime <= %s" \
+            "ORDER BY beacon_rssi DESC LIMIT 1"
 
     mycursor.execute(query, (sda, start_time, end_time))
     myresult = format(mycursor.fetchall())
 
-    # getting the highest
-    highestrssi = -150
-    hightestrow = 0
-    for i in range(len(myresult)):
-        if int(myresult[i]["beacon_rssi"]) > highestrssi:
-            highestrssi = int(myresult[i]["beacon_rssi"])
-            hightestrow = i
-
     # close the connection
     mycursor.close()
     conn.close()
-    # print(myresult)
     # Return all records
-    return jsonify(myresult[hightestrow])
-
+    return jsonify(myresult)
 
 def format(arr):
     newarr = []
@@ -223,7 +212,6 @@ def format(arr):
         obj['beacon_rssi'] = l[1]
         newarr.append(obj)
     return newarr
-
 
 if __name__ == '__main__':
     # print(file[4])
