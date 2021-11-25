@@ -195,12 +195,11 @@ def extractbeacon():
     mycursor = conn.cursor()
 
     # query
-    query = "SELECT b.level, b.location, d.datetime, d.beacon_rssi " \
-            "FROM 3102_Flask.Detected_Beacon d, 3102_Flask.Beacon b " \
-            "WHERE d.beacon_mac = b.mac " \
-            "AND d.sda = %s " \
-            "AND d.datetime >= %s AND d.datetime <= %s " \
-            "ORDER BY d.beacon_rssi DESC LIMIT 1 "
+    query = "SELECT beacon_mac, beacon_rssi " \
+            "FROM Detected_Beacon " \
+            "WHERE sda = %s " \
+            "AND datetime >= %s AND datetime <= %s" \
+            "ORDER BY beacon_rssi DESC LIMIT 1"
 
     mycursor.execute(query, (sda, start_time, end_time))
     myresult = format(mycursor.fetchall())
@@ -217,9 +216,8 @@ def format(arr):
     for x in arr:
         obj = {}
         l = list(x)
-        obj['level'] = l[0]
-        obj['location'] = l[1]
-        obj['timestamp'] = l[2]
+        obj['beacon_mac'] = l[0]
+        obj['beacon_rssi'] = l[1]
         newarr.append(obj)
     return newarr
 
