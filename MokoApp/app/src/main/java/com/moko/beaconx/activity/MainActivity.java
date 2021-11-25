@@ -322,10 +322,11 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
     @SuppressLint("LongLogTag")
     private void updateDevices() {
 
-        Log.i("PR2", "--------" );
-        Log.i("PR2", "starttime" );
-        long startime= System.currentTimeMillis();
-        Log.i("TimeClass", " Time value in milliseconds "+ startime);
+//        Log.i("PR2", "--------" );
+//        Log.i("PR2", "starttime" );
+//        long startime= System.nanoTime();
+//
+//        Log.i("TimeClass", " Start value in milliseconds "+ startime);
 
         beaconXInfos.clear();
         if (!TextUtils.isEmpty(filterName) || filterRssi != -127) {
@@ -391,24 +392,32 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
         Log.i("PR2", "endtime" );
-        long endtime= System.currentTimeMillis();
-        Log.i("TimeClass", " Time value in milliseconds "+ endtime);
 
-        long duration = endtime - startime;
-        Log.i("TimeClassResults", " Time value in milliseconds "+ duration);
+//        try{
+//            Thread.sleep(1000);
+//
+//        } catch (InterruptedException e ){
+//            e.printStackTrace();
+//        }
+//        long endtime= System.nanoTime();
+//        Log.i("TimeClass", " End value in milliseconds "+ endtime);
+//
+//        long duration = endtime - startime;
+//        Log.i("TimeClassResults", " Duration value in milliseconds "+ duration);
 
-        durations[counter] = duration;
-        counter += 1;
-        int total = 0;
-        if(counter == limit){
-            counter = 0;
-            for(int i=0; i<limit; i++){
-                total += duration;
-            }
-            int Result = total/limit;
-            Log.i("TimeClassAverage", "Average processing time per 20 request is " + String.valueOf(Result) + " milliseconds");
-        }
+//        durations[counter] = duration;
+//        counter += 1;
+//        int total = 0;
+//        if(counter == limit){
+//            counter = 0;
+//            for(int i=0; i<limit; i++){
+//                total += duration;
+//            }
+//            int Result = ((total/limit)/1000);
+//            Log.i("TimeClassAverage", "Average processing time per 20 request is " + String.valueOf(Result) + " milliseconds");
+//        }
 
         if (_staff != "000" && _ipaddress != "0.0.0.0:0000") {
             Log.i("sent0", _ipaddress);
@@ -645,10 +654,16 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
 
 
     private void postRequest(String message, String URL) {
+        Log.i("Request", "starttime" );
+        long startimeRequest= System.nanoTime();
+        Log.i("TimeClass", " Start value in milliseconds "+ startimeRequest);
+
         RequestBody requestBody = buildRequestBody(message);
         System.out.println(message);
         System.out.println(URL);
+
         OkHttpClient okHttpClient = new OkHttpClient();
+
         Request request = new Request
                 .Builder()
                 .post(requestBody)
@@ -677,10 +692,23 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+                        long endtimerequest = System.nanoTime();
+                        Log.i("TimeClass", " End value in milliseconds "+ endtimerequest);
+                        long duration = endtimerequest - startimeRequest;
+                        Log.i("BeaconsRequests", " Duration value in milliseconds "+ duration);
+                        durations[counter] = duration;
+                        counter += 1;
+                        int total = 0;
+                        if(counter == limit){
+                            counter = 0;
+                            for(int i=0; i<limit; i++){
+                                total += duration;
+                            }
+                            int Result = ((total/limit)/1000);
+                            Log.i("TimeClassAverage", "Average processing time per 20 request is " + String.valueOf(Result) + " milliseconds");
+                        }
                     }
                 });
-
-
             }
         });
     }
