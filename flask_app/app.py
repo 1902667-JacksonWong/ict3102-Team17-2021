@@ -122,12 +122,15 @@ def index():
     if request.method == "POST":
         # Start time for the function
         startimeForFunction = time.time() * 1000
+        countForFunction =0
+        totaltimeforfunction=0
+        print("Processing-Start-Time: " + str(startimeForFunction))
 
         # get the data from the post requsets
         data = request.data
 
         # Extracting JSON
-        print("--------")
+        # print("--------")
         beacons = json.loads((data).decode("UTF-8"))
         if isinstance(beacons, dict):
             beacon_list = beacons['beacons']
@@ -153,24 +156,21 @@ def index():
                 sql = "INSERT INTO Detected_Beacon (sda, beacon_mac, beacon_rssi, datetime) VALUES (%s, %s, %s, %s)"
                 val = (beacon['staff'], mac, beacon['rssi'], str(datetime1))
                 mycursor.execute(sql, val)
-                endtimeForinsert = time.time() * 1000
-
-                print("startimeForinsertDB: " + str(startimeForinsert))
-                print("endtimeForinsertDB: " + str(endtimeForinsert))
-                processingtime = endtimeForinsert - startimeForinsert
-                count += 1
-                print("Total-ProcessingTime-DB: " + str(processingtime))
-                processingtimetotal = processingtimetotal + processingtime
-            print("count: " + str(count))
-            print("Total-Average-ProcessingTime-DB: " + str(processingtimetotal) +
-                  " milliseconds for total number of " + str(count) + " requests")
+                count = count + 1
+            endtimeForinsert = time.time() * 1000
+            # print("Processing-End-Time: " + str(endtimeForinsert))
+            processingtimetotal = (endtimeForinsert - startimeForinsert)
+            Avgtotaltimeforfunction = (float(totaltimeforfunction + processingtimetotal)/float(count))
+            # print("Total-Avg-Processing-Time-Taken: " + str(Avgtotaltimeforfunction) + " milliseconds for total number of " + str(count) + " requests")
 
             conn.commit()
             mycursor.close()
             conn.close
-        endtimeForFunction = time.time() * 1000
-        processingtimeForFcuntioonn = endtimeForFunction - startimeForFunction
-        print("endtimeForFunction: " + str(processingtimeForFcuntioonn))
+        
+        # endtimeForFunction = time.time() * 1000
+        # print("Processing-End-Time: " + str(endtimeForFunction))
+        # AvgprocessingtimeForFunction = (float(endtimeForFunction - startimeForFunction)/float(count))
+        # print("Total-Processing-Time-Taken: " + str(AvgprocessingtimeForFunction) + " milliseconds for total number of " + str(count) + " requests")
         return f"Request Recieved"
 
 
@@ -214,6 +214,6 @@ def format(arr):
     return newarr
 
 if __name__ == '__main__':
-    # print(file[4])
-    #app.run(debug=True, host=file[3], port=file[4])
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host=file[3], port=file[4])
+    # app.run(debug=True, host='0.0.0.0', port=5000)
+

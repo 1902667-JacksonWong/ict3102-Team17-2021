@@ -548,19 +548,19 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         findViewById(R.id.iv_refresh).startAnimation(animation);
         beaconXInfoParseable = new BeaconXInfoParseableImpl();
         MokoSupport.getInstance().startScanDevice(this);
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                MokoSupport.getInstance().stopScanDevice();
-                try{
-                    Thread.sleep(1000);
-
-                } catch (InterruptedException e ){
-                    e.printStackTrace();
-                }
-                startScan();
-            }
-        }, 1000 * 60);
+//        mHandler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                MokoSupport.getInstance().stopScanDevice();
+//                try{
+//                    Thread.sleep(1000);
+//
+//                } catch (InterruptedException e ){
+//                    e.printStackTrace();
+//                }
+//                startScan();
+//            }
+//        }, 1000 * 60);
     }
 
     private String mPassword;
