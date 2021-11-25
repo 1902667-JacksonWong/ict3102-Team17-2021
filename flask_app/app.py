@@ -122,8 +122,8 @@ def index():
     if request.method == "POST":
         # Start time for the function
         startimeForFunction = time.time() * 1000
-        countForFunction = 0
-        totaltimeforfunction = 0
+        countForFunction =0
+        totaltimeforfunction=0
         print("Processing-Start-Time: " + str(startimeForFunction))
 
         # get the data from the post requsets
@@ -139,14 +139,10 @@ def index():
             conn = opensqlconnection()
             mycursor = conn.cursor()
 
-            temp_query = ""
-
             # delete current first
             sql = f"DELETE FROM Detected_Beacon WHERE sda = '{sda}'"
-            # mycursor.execute(sql)
+            mycursor.execute(sql)
             # conn.commit()
-
-            temp_query = temp_query + sql + ';'
 
             processingtimetotal = 0
             count = 0
@@ -157,23 +153,20 @@ def index():
                 datetime1 = now.strftime("%Y-%m-%d %H:%M:%S")
                 # print("datetime: ", datetime1)
                 startimeForinsert = time.time() * 1000
-                #sql = "INSERT INTO Detected_Beacon (sda, beacon_mac, beacon_rssi, datetime) VALUES (%s, %s, %s, %s)"
-                sql = f"INSERT INTO Detected_Beacon (sda, beacon_mac, beacon_rssi, datetime) VALUES ({beacon['staff']}, {mac}, {beacon['rssi']}, {str(datetime1)})"
-                #val = (beacon['staff'], mac, beacon['rssi'], str(datetime1))
-                #mycursor.execute(sql, val)
-                temp_query = temp_query + sql + ';'
+                sql = "INSERT INTO Detected_Beacon (sda, beacon_mac, beacon_rssi, datetime) VALUES (%s, %s, %s, %s)"
+                val = (beacon['staff'], mac, beacon['rssi'], str(datetime1))
+                mycursor.execute(sql, val)
                 count = count + 1
             endtimeForinsert = time.time() * 1000
             # print("Processing-End-Time: " + str(endtimeForinsert))
             processingtimetotal = (endtimeForinsert - startimeForinsert)
-            Avgtotaltimeforfunction = (
-                float(totaltimeforfunction + processingtimetotal)/float(count))
+            Avgtotaltimeforfunction = (float(totaltimeforfunction + processingtimetotal)/float(count))
             # print("Total-Avg-Processing-Time-Taken: " + str(Avgtotaltimeforfunction) + " milliseconds for total number of " + str(count) + " requests")
-            mycursor.execute(sql)
+
             conn.commit()
             mycursor.close()
             conn.close
-
+        
         # endtimeForFunction = time.time() * 1000
         # print("Processing-End-Time: " + str(endtimeForFunction))
         # AvgprocessingtimeForFunction = (float(endtimeForFunction - startimeForFunction)/float(count))
@@ -210,7 +203,6 @@ def extractbeacon():
     # Return all records
     return jsonify(myresult)
 
-
 def format(arr):
     newarr = []
     for x in arr:
@@ -221,7 +213,7 @@ def format(arr):
         newarr.append(obj)
     return newarr
 
-
 if __name__ == '__main__':
     app.run(debug=True, host=file[3], port=file[4])
     # app.run(debug=True, host='0.0.0.0', port=5000)
+
