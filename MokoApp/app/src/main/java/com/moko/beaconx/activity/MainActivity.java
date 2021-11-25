@@ -655,8 +655,8 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
 
     private void postRequest(String message, String URL) {
         Log.i("Request", "starttime" );
-        long startimeRequest= System.nanoTime();
-        Log.i("TimeClass", " Start value in milliseconds "+ startimeRequest);
+        long startimeRequest= System.currentTimeMillis();
+        Log.i("TimeClassAverage", " Start value in milliseconds "+ startimeRequest);
 
         RequestBody requestBody = buildRequestBody(message);
         System.out.println(message);
@@ -692,10 +692,10 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        long endtimerequest = System.nanoTime();
-                        Log.i("TimeClass", " End value in milliseconds "+ endtimerequest);
+                        long endtimerequest = System.currentTimeMillis();
+                        Log.i("TimeClassAverage", " End value in milliseconds "+ endtimerequest);
                         long duration = endtimerequest - startimeRequest;
-                        Log.i("BeaconsRequests", " Duration value in milliseconds "+ duration);
+                        Log.i("TimeClassAverage", " Duration value in milliseconds "+ duration);
                         durations[counter] = duration;
                         counter += 1;
                         int total = 0;
@@ -704,8 +704,8 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                             for(int i=0; i<limit; i++){
                                 total += duration;
                             }
-                            int Result = ((total/limit)/1000);
-                            Log.i("TimeClassAverage", "Average processing time per 20 request is " + String.valueOf(Result) + " milliseconds");
+                            int Result = (total/limit);
+                            Log.i("TimeClassAverage", "Average Response time per 20 request is " + String.valueOf(Result) + " milliseconds");
                         }
                     }
                 });
