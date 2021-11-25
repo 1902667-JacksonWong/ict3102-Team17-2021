@@ -6,7 +6,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 app = Flask(__name__)
 
 # Local
-ip_address = "192.168.50.90"
+ip_address = "192.168.0.240"
 # AWS
 # ip_address = "0.0.0.0."
 port = "5000"
@@ -19,7 +19,7 @@ def index():
 def ping_server_0():
 	end_timestamp = int(time.time())
 	start_timestamp = end_timestamp - 10
-	sda = "003"
+	sda = "7"
 
 	url = "http://"+ip_address + ":" + port + "/extractbeacon?staff_id="+sda+"&start_time="+str(start_timestamp)+"&end_time="+str(end_timestamp)
 	# url = "http://"+ip_address + ":" + port + "/extractbeacon?staff_id=003&start_time=1635812096&end_time=1635898496"
@@ -33,7 +33,7 @@ def ping_server_2():
 	end_timestamp = int(time.time())
 	# end_timestamp = int(1637310056)
 	start_timestamp = end_timestamp - 10
-	sda = "009"
+	sda = "9"
 
 	url = "http://"+ip_address + ":" + port + "/extractbeacon?staff_id="+sda+"&start_time="+str(start_timestamp)+"&end_time="+str(end_timestamp)
 	# url = "http://192.168.50.90:8080/extractbeacon?staff_id=2&start_time=1635812096&end_time=1635898496"
