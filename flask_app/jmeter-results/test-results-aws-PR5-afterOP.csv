@@ -1,2 +1,0 @@
-timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,failureMessage,bytes,sentBytes,grpThreads,allThreads,URL,Latency,IdleTime,Connect
-1637801340586,81,HTTP Request,200,OK,Thread Group 1-1,text,true,,170,1269,1,1,http://13.229.114.206:5000/,79,0,20
