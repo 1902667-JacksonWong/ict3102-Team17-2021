@@ -10,7 +10,6 @@ import pymysql as sql
 # import datetime
 
 app = Flask(__name__)
-Compress(app)
 
 # global beacon_list
 beacon_list = []
