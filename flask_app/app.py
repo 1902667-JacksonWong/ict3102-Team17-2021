@@ -1,7 +1,6 @@
 from logging import Handler
 from flask import Flask, request, render_template
 from flask.json import jsonify
-from flask_compress import Compress
 import json
 import time
 from datetime import datetime
