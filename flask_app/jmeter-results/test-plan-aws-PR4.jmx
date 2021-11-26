@@ -16,9 +16,9 @@
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">10</stringProp>
+          <stringProp name="LoopController.loops">1</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">200</stringProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
         <stringProp name="ThreadGroup.ramp_time">1</stringProp>
         <boolProp name="ThreadGroup.scheduler">false</boolProp>
         <stringProp name="ThreadGroup.duration"></stringProp>
@@ -46,6 +46,13 @@
     {&quot;mac&quot;:&quot;ED23CBDF8B80&quot;,&quot;staff&quot;:&quot;1&quot;,&quot;rssi&quot;:&quot;-18&quot;},&#xd;
     {&quot;mac&quot;:&quot;F112F03A720D&quot;,&quot;staff&quot;:&quot;1&quot;,&quot;rssi&quot;:&quot;-38&quot;},&#xd;
     {&quot;mac&quot;:&quot;F3514C561E0B&quot;,&quot;staff&quot;:&quot;1&quot;,&quot;rssi&quot;:&quot;-48&quot;},&#xd;
+    {&quot;mac&quot;:&quot;CCE3EFDACB52&quot;,&quot;staff&quot;:&quot;1&quot;,&quot;rssi&quot;:&quot;-88&quot;},&#xd;
+    {&quot;mac&quot;:&quot;D20FB4E0B1D5&quot;,&quot;staff&quot;:&quot;1&quot;,&quot;rssi&quot;:&quot;-58&quot;},&#xd;
+    {&quot;mac&quot;:&quot;FA55EB6C23B4&quot;,&quot;staff&quot;:&quot;1&quot;,&quot;rssi&quot;:&quot;-38&quot;},&#xd;
+    {&quot;mac&quot;:&quot;E1EB15371D96&quot;,&quot;staff&quot;:&quot;1&quot;,&quot;rssi&quot;:&quot;-28&quot;},&#xd;
+    {&quot;mac&quot;:&quot;CCF3E1C929FD&quot;,&quot;staff&quot;:&quot;1&quot;,&quot;rssi&quot;:&quot;-68&quot;},&#xd;
+    {&quot;mac&quot;:&quot;CF1EBCE74C9C&quot;,&quot;staff&quot;:&quot;1&quot;,&quot;rssi&quot;:&quot;-78&quot;},&#xd;
+    {&quot;mac&quot;:&quot;D2622D4F854E&quot;,&quot;staff&quot;:&quot;1&quot;,&quot;rssi&quot;:&quot;-68&quot;},&#xd;
     {&quot;mac&quot;:&quot;DF037DD86E53&quot;,&quot;staff&quot;:&quot;1&quot;,&quot;rssi&quot;:&quot;-78&quot;}&#xd;
   ]&#xd;
 }</stringProp>
