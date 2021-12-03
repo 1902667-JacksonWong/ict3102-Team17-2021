@@ -89,6 +89,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
     long [] durations = new long[20];
     int limit = 20;
     int counter = 0;
+    int counter1 =0;
 
 
     @BindView(R.id.iv_refresh)
@@ -322,11 +323,11 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
     @SuppressLint("LongLogTag")
     private void updateDevices() {
 
-//        Log.i("PR2", "--------" );
-//        Log.i("PR2", "starttime" );
-//        long startime= System.nanoTime();
-//
-//        Log.i("TimeClass", " Start value in milliseconds "+ startime);
+        Log.i("PR2", "--------" );
+        Log.i("PR2", "starttime" );
+        long startime= System.currentTimeMillis();
+
+        Log.i("TimeClass", " Start value in milliseconds "+ startime);
 
         beaconXInfos.clear();
         if (!TextUtils.isEmpty(filterName) || filterRssi != -127) {
@@ -395,29 +396,29 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
 
         Log.i("PR2", "endtime" );
 
-//        try{
-//            Thread.sleep(1000);
-//
-//        } catch (InterruptedException e ){
-//            e.printStackTrace();
-//        }
-//        long endtime= System.nanoTime();
-//        Log.i("TimeClass", " End value in milliseconds "+ endtime);
-//
-//        long duration = endtime - startime;
-//        Log.i("TimeClassResults", " Duration value in milliseconds "+ duration);
+        try{
+            Thread.sleep(1000);
 
-//        durations[counter] = duration;
-//        counter += 1;
-//        int total = 0;
-//        if(counter == limit){
-//            counter = 0;
-//            for(int i=0; i<limit; i++){
-//                total += duration;
-//            }
-//            int Result = ((total/limit)/1000);
-//            Log.i("TimeClassAverage", "Average processing time per 20 request is " + String.valueOf(Result) + " milliseconds");
-//        }
+        } catch (InterruptedException e ){
+            e.printStackTrace();
+        }
+        long endtime= System.currentTimeMillis();
+        Log.i("TimeClass", " End value in milliseconds "+ endtime);
+
+        long duration = endtime - startime;
+        Log.i("TimeClassResults", " Duration value in milliseconds "+ duration);
+
+        durations[counter1] = duration;
+        counter1 += 1;
+        long total = 0;
+        if(counter1 == limit){
+            counter1 = 0;
+            for(int i=0; i<limit; i++){
+                total += duration;
+            }
+            long Result = ((total/limit)/1000);
+            Log.i("TimeClassAveragePro", "Average processing time per 20 request is " + String.valueOf(Result) + " milliseconds");
+        }
 
         if (_staff != "000" && _ipaddress != "0.0.0.0:0000") {
             Log.i("sent0", _ipaddress);
@@ -698,14 +699,14 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                         Log.i("TimeClassAverage", " Duration value in milliseconds "+ duration);
                         durations[counter] = duration;
                         counter += 1;
-                        int total = 0;
+                        long total = 0;
                         if(counter == limit){
                             counter = 0;
                             for(int i=0; i<limit; i++){
                                 total += duration;
                             }
-                            int Result = (total/limit);
-                            Log.i("TimeClassAverage", "Average Response time per 20 request is " + String.valueOf(Result) + " milliseconds");
+                            long Result = (total/limit);
+                            Log.i("TimeClassAverageRes", "Average Response time per 20 request is " + String.valueOf(Result) + " milliseconds");
                         }
                     }
                 });
